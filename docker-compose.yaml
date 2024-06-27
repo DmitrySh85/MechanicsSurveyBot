@@ -1,0 +1,25 @@
+version: "3.9"
+services:
+  app:
+    build:
+      context: .
+    env_file: .env
+    container_name: survey_bot
+    command: [ "./docker/app.sh" ]
+    volumes:
+      - .:/survey_bot
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    container_name: survey_db
+    environment:
+      POSTGRES_DB: "postgres"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "postgres"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+
+volumes:
+  dbdata:

@@ -21,6 +21,7 @@ from services.handlers_services import (
     get_question_text,
     process_answer,
     check_user,
+    check_user_is_not_blocked,
     send_survey_results_to_admin
     )
 from services.user_services import (
@@ -94,16 +95,14 @@ async def handle_register_rejection(callback_query: CallbackQuery):
     await callback_query.message.edit_text(
         f"User {user_id} {username} has been blocked.", reply_markup=None
     )
-    await callback_query.bot.send_message(  # type: ignore
+    await callback_query.bot.send_message(
         chat_id=user_id, text=REGISTRATION_REJECT_MESSAGE
     )
 
 
-
-
 @handlers_router.message(F.text == "Пройти опрос")
 async def survey_handler(message: Message, state: FSMContext) -> None:
-    user = await check_user(message.chat.id)
+    user = await check_user_is_not_blocked(message.chat.id)
     if not user:
         await message.reply(NO_USER_FOUND_TEXT)
         return

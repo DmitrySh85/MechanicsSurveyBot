@@ -73,6 +73,18 @@ async def check_user(chat_id: int) -> int| None:
     user_id = result.scalar()
     if user_id:
         return user_id
+    
+
+async def check_user_is_not_blocked(chat_id: int) -> int| None:
+    async with get_session() as session:
+        stmt = select(User.id).filter(
+            User.tg_id == int(chat_id),
+            User.is_blocked == False
+                                      )
+        result = await session.execute(stmt)
+    user_id = result.scalar()
+    if user_id:
+        return user_id
 
 
 async def send_survey_results_to_admin(callback_query: CallbackQuery, valid_answers_count: int):

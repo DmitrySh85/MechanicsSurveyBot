@@ -1,8 +1,10 @@
 import asyncio
 import logging
 from dispatcher import start_polling
+from bot_logger import init_logger
 
-logging.basicConfig(level=logging.INFO, filename="survey_bot.log")
+
+logger = init_logger(__name__)
 
 
 if __name__ == "__main__":

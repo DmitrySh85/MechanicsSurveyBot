@@ -20,6 +20,7 @@ class User(Base):
     tg_id = Column(BigInteger(), unique=True)
     name = Column(String(), nullable=True)
     is_admin = Column(Boolean(), default=False)
+    is_blocked = Column(Boolean(), default=False)
 
 
 class UserAnswer(Base):

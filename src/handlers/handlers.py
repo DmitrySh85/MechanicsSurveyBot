@@ -8,7 +8,11 @@ from aiogram.fsm.state import State
 from aiogram.types import Message, CallbackQuery
 from static_text.static_text import (
     START_TEXT,
-    NO_USER_FOUND_TEXT
+    NO_USER_FOUND_TEXT,
+    registration_confirm_callback_data,
+    registration_reject_callback_data,
+    REGISTRATION_REJECT_MESSAGE
+
 )
 from keyboards.keyboards import survey_keyboard, answer_keyboard
 from forms.forms import SurveyForm
@@ -19,6 +23,19 @@ from services.handlers_services import (
     check_user,
     send_survey_results_to_admin
     )
+from services.user_services import (
+    register_user,
+    reject_user
+)
+
+from senders import (
+    send_start_message, 
+    send_not_registered_message,
+    send_registration_request_to_admin
+)
+from bot_logger import init_logger
+
+logger = init_logger(__name__)
 
 
 handlers_router = Router()
@@ -26,15 +43,62 @@ handlers_router = Router()
 
 @handlers_router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    logging.info(f"Start command from {message.chat.id}")
-    await message.answer(f"Добрый день, {html.bold(message.from_user.full_name)}!\n{START_TEXT}",
-                         reply_markup=survey_keyboard)
+    if await check_user(message.from_user.id):
+        return await send_start_message(message)
+    await send_registration_request_to_admin(message)
+    await send_not_registered_message(message)
 
 
-@handlers_router.message(Command("chat"))
+@handlers_router.message(Command("chat_id_for_user"))
 async def send_telegram_id(message: Message) -> None:
     logging.info(f"Chat id request from {message.chat.id}")
     await message.answer(f"Ваш id в телеграм {message.chat.id}.")
+
+
+@handlers_router.callback_query(
+    F.data.startswith(registration_confirm_callback_data)
+)
+async def handle_register_confirmation(callback_query: CallbackQuery):
+    try:
+        user_id = int(callback_query.data.split(":")[1])
+        username = callback_query.data.split(":")[2]
+    except IndexError:
+        logger.error("Invalid data format")
+        return
+    except Exception as e:
+        logger.error(e)
+        return
+    await register_user(user_id, username)
+    await callback_query.answer(f"User {user_id} has been registered.")
+    await callback_query.message.edit_text(
+        f"User {user_id} has been registered.", reply_markup=None
+    )
+    await callback_query.bot.send_message(chat_id=user_id, text=START_TEXT, reply_markup=survey_keyboard)
+
+
+@handlers_router.callback_query(
+    F.data.startswith(registration_reject_callback_data)
+)
+async def handle_register_rejection(callback_query: CallbackQuery):
+    try:
+        user_id = int(callback_query.data.split(":")[1])
+        username = callback_query.data.split(":")[2]
+    except IndexError:
+        logger.error("Invalid data format")
+        return
+    except Exception as e:
+        logger.error(e)
+        return
+    await reject_user(user_id, username)
+    await callback_query.answer(f"User {user_id} has been rejected.")
+    await callback_query.message.edit_text(
+        f"User {user_id} {username} has been blocked.", reply_markup=None
+    )
+    await callback_query.bot.send_message(  # type: ignore
+        chat_id=user_id, text=REGISTRATION_REJECT_MESSAGE
+    )
+
+
 
 
 @handlers_router.message(F.text == "Пройти опрос")

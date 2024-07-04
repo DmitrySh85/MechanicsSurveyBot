@@ -9,7 +9,10 @@ from settings import BOT_TOKEN
 from aiogram import Bot
 from aiogram.client.default import DefaultBotProperties
 from aiogram.enums import ParseMode
+from bot_logger import init_logger
 
+
+logger = init_logger(__name__)
 
 
 async def get_questions_from_db():
@@ -71,12 +74,14 @@ async def check_user(chat_id: int) -> int| None:
     if user_id:
         return user_id
 
+
 async def send_survey_results_to_admin(callback_query: CallbackQuery, valid_answers_count: int):
     admin_tg_ids = await get_admin_tg_ids_from_db()
     message_text = await get_final_message_text(callback_query, valid_answers_count)
     for tg_id in admin_tg_ids:
         bot = Bot(token=BOT_TOKEN, default=DefaultBotProperties(parse_mode=ParseMode.HTML))
         await bot.send_message(tg_id, message_text)
+
 
 async def get_final_message_text(callback_query: CallbackQuery, valid_answers_count: int) -> None:
     user_first_name = callback_query.from_user.first_name

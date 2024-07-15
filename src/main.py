@@ -1,5 +1,4 @@
 import asyncio
-import logging
 from dispatcher import start_polling
 from bot_logger import init_logger
 

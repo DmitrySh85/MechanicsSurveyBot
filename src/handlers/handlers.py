@@ -22,7 +22,7 @@ from services.handlers_services import (
     process_answer,
     check_user,
     check_user_is_not_blocked,
-    send_survey_results_to_admin
+    send_survey_results
     )
 from services.user_services import (
     register_user,
@@ -166,8 +166,7 @@ async def fifth_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     await process_answer(callback_query, valid_answer, state)
     data = await state.get_data()
     valid_answers_count = data.get("valid_answers", 0)
-    await callback_query.message.answer("Вы закончили опрос.")
-    await send_survey_results_to_admin(callback_query, valid_answers_count)
+    await send_survey_results(callback_query, valid_answers_count)
     await state.clear()
 
 

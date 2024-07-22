@@ -45,6 +45,13 @@ async def get_question_text(state: FSMContext, question_number: int):
     return question_text
 
 
+async def get_number_of_answer_options(state: FSMContext, question_number: int):
+    data = await state.get_data()
+    question = data["questions"][question_number]
+    print(question)
+    return len(question) - 4
+
+
 async def process_correct_answer(state: FSMContext) -> None:
     data = await state.get_data()
     valid_answers = data.get("valid_answers", 0)
@@ -64,7 +71,6 @@ async def process_answer(callback_query: CallbackQuery, valid_answer, state: FSM
     else:
         answer_letter = "ABCD"[int(answer)]
         valid_answer_letter = "ABCD"[valid_answer]
-        await process_incorrect_answer()
         bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter, valid_answer_letter=valid_answer_letter)
         await callback_query.message.answer(bot_answer_text)
 

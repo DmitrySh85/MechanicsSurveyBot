@@ -8,9 +8,9 @@ class Question(Base):
     id = Column(Integer(), primary_key=True)
     text = Column(String())
     first_answer = Column(String())
-    second_answer = Column(String())
-    third_answer = Column(String())
-    fourth_answer = Column(String())
+    second_answer = Column(String(), nullable=True)
+    third_answer = Column(String(), nullable=True)
+    fourth_answer = Column(String(), nullable=True)
     valid_answer_number = Column(Integer)
 
 

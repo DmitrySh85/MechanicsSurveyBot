@@ -19,6 +19,7 @@ from forms.forms import SurveyForm
 from services.handlers_services import (
     get_questions_from_db,
     get_question_text,
+    get_number_of_answer_options,
     process_answer,
     check_user,
     check_user_is_not_blocked,
@@ -112,7 +113,8 @@ async def survey_handler(message: Message, state: FSMContext) -> None:
     await state.set_state(SurveyForm.first_question)
     question_number = 0
     question_text = await get_question_text(state, question_number)
-    await message.answer(question_text, reply_markup=answer_keyboard)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
 @handlers_router.callback_query(SurveyForm.first_question)
@@ -123,7 +125,8 @@ async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     await state.set_state(SurveyForm.second_question)
     question_number = 1
     question_text = await get_question_text(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
 @handlers_router.callback_query(SurveyForm.second_question)
@@ -134,7 +137,8 @@ async def second_answer_handler(callback_query: CallbackQuery, state: FSMContext
     await state.set_state(SurveyForm.third_question)
     question_number = 2
     question_text = await get_question_text(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
 @handlers_router.callback_query(SurveyForm.third_question)
@@ -145,7 +149,8 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     await state.set_state(SurveyForm.fourth_question)
     question_number = 3
     question_text = await get_question_text(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
 @handlers_router.callback_query(SurveyForm.fourth_question)
@@ -156,7 +161,8 @@ async def fourth_answer_handler(callback_query: CallbackQuery, state: FSMContext
     await state.set_state(SurveyForm.fifth_question)
     question_number = 4
     question_text = await get_question_text(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
 @handlers_router.callback_query(SurveyForm.fifth_question)

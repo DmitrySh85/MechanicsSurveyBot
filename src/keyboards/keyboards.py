@@ -19,16 +19,15 @@ survey_keyboard = ReplyKeyboardMarkup(
             resize_keyboard=True,
         )
 
-answer_keyboard = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text="A", callback_data="0",),
-            InlineKeyboardButton(text="B", callback_data="1"),
-            InlineKeyboardButton(text="C", callback_data="2"),
-            InlineKeyboardButton(text="D", callback_data="3"),
+def answer_keyboard(length_of_answers: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="ABCD"[i], callback_data=str(i)) for i in range(length_of_answers)
+            ]
         ]
-    ]
-)
+    )
+    return keyboard
 
 
 def confirm_registration_kb(user: User) -> InlineKeyboardMarkup:

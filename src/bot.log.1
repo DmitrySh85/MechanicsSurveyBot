@@ -1,0 +1,237 @@
+2024-07-22 16:29:34,892 - aiogram.event - ERROR - Cause exception while process update id=948208075 by bot id=5955659888
+ValidationError: 4 validation errors for SendMessage
+reply_markup.InlineKeyboardMarkup
+  Input should be a valid dictionary or instance of InlineKeyboardMarkup [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ReplyKeyboardMarkup
+  Input should be a valid dictionary or instance of ReplyKeyboardMarkup [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ReplyKeyboardRemove
+  Input should be a valid dictionary or instance of ReplyKeyboardRemove [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ForceReply
+  Input should be a valid dictionary or instance of ForceReply [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+Traceback (most recent call last):
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 49, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 170, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\src\handlers\handlers.py", line 116, in survey_handler
+    await message.answer(question_text, reply_markup=answer_keyboard)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\types\message.py", line 2027, in answer
+    return SendMessage(
+           ^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\pydantic\main.py", line 176, in __init__
+    self.__pydantic_validator__.validate_python(data, self_instance=self)
+pydantic_core._pydantic_core.ValidationError: 4 validation errors for SendMessage
+reply_markup.InlineKeyboardMarkup
+  Input should be a valid dictionary or instance of InlineKeyboardMarkup [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ReplyKeyboardMarkup
+  Input should be a valid dictionary or instance of ReplyKeyboardMarkup [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ReplyKeyboardRemove
+  Input should be a valid dictionary or instance of ReplyKeyboardRemove [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+reply_markup.ForceReply
+  Input should be a valid dictionary or instance of ForceReply [type=model_type, input_value=<function answer_keyboard at 0x0000019CAC33CE00>, input_type=function]
+    For further information visit https://errors.pydantic.dev/2.7/v/model_type
+2024-07-22 16:31:20,960 - aiogram.dispatcher - INFO - Polling stopped
+2024-07-22 16:31:21,217 - aiogram.dispatcher - INFO - Polling stopped for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:31:35,361 - aiogram.dispatcher - INFO - Start polling
+2024-07-22 16:31:35,694 - aiogram.dispatcher - INFO - Run polling for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:31:50,305 - aiogram.event - INFO - Update id=948208076 is handled. Duration 703 ms by bot id=5955659888
+2024-07-22 16:31:52,118 - aiogram.event - INFO - Update id=948208077 is not handled. Duration 561 ms by bot id=5955659888
+2024-07-22 16:31:52,119 - aiogram.event - ERROR - Cause exception while process update id=948208077 by bot id=5955659888
+IndexError: string index out of range
+Traceback (most recent call last):
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 49, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 170, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\src\handlers\handlers.py", line 117, in survey_handler
+    await message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\src\keyboards\keyboards.py", line 26, in answer_keyboard
+    InlineKeyboardButton(text="ABCD"[i], callback_data=str(i)) for i in range(length_of_answers)
+                              ~~~~~~^^^
+IndexError: string index out of range
+2024-07-22 16:32:42,320 - aiogram.dispatcher - INFO - Polling stopped
+2024-07-22 16:32:42,580 - aiogram.dispatcher - INFO - Polling stopped for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:32:54,586 - aiogram.dispatcher - INFO - Start polling
+2024-07-22 16:32:55,870 - aiogram.dispatcher - INFO - Run polling for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:33:20,564 - aiogram.event - INFO - Update id=948208078 is handled. Duration 578 ms by bot id=5955659888
+2024-07-22 16:33:22,287 - aiogram.event - INFO - Update id=948208079 is not handled. Duration 545 ms by bot id=5955659888
+2024-07-22 16:33:22,288 - aiogram.event - ERROR - Cause exception while process update id=948208079 by bot id=5955659888
+IndexError: string index out of range
+Traceback (most recent call last):
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 309, in _process_update
+    response = await self.feed_update(bot, update, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 158, in feed_update
+    response = await self.update.wrap_outer_middleware(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\error.py", line 25, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\middlewares\user_context.py", line 49, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\fsm\middleware.py", line 42, in __call__
+    return await handler(event, data)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\dispatcher.py", line 276, in _listen_update
+    return await self.propagate_event(update_type=update_type, event=event, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 170, in _propagate_event
+    response = await router.propagate_event(update_type=update_type, event=event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 142, in propagate_event
+    return await observer.wrap_outer_middleware(_wrapped, event=event, data=kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 137, in _wrapped
+    return await self._propagate_event(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\router.py", line 162, in _propagate_event
+    response = await observer.trigger(event, **kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\telegram.py", line 121, in trigger
+    return await wrapped_inner(event, kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\.venv\Lib\site-packages\aiogram\dispatcher\event\handler.py", line 43, in call
+    return await wrapped()
+           ^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\src\handlers\handlers.py", line 118, in survey_handler
+    await message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python\MechanicsSurveyBot\src\keyboards\keyboards.py", line 26, in answer_keyboard
+    InlineKeyboardButton(text="ABCD"[i], callback_data=str(i)) for i in range(length_of_answers)
+                              ~~~~~~^^^
+IndexError: string index out of range
+2024-07-22 16:34:12,593 - aiogram.dispatcher - INFO - Polling stopped
+2024-07-22 16:34:12,850 - aiogram.dispatcher - INFO - Polling stopped for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:34:30,680 - aiogram.dispatcher - INFO - Start polling
+2024-07-22 16:34:30,964 - aiogram.dispatcher - INFO - Run polling for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:34:32,388 - aiogram.dispatcher - INFO - Polling stopped
+2024-07-22 16:34:32,656 - aiogram.dispatcher - INFO - Polling stopped for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:34:46,185 - aiogram.dispatcher - INFO - Start polling
+2024-07-22 16:34:46,452 - aiogram.dispatcher - INFO - Run polling for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:34:50,380 - aiogram.event - INFO - Update id=948208080 is handled. Duration 844 ms by bot id=5955659888
+2024-07-22 16:34:52,342 - aiogram.event - INFO - Update id=948208081 is handled. Duration 655 ms by bot id=5955659888
+2024-07-22 16:35:06,325 - aiogram.dispatcher - INFO - Polling stopped
+2024-07-22 16:35:06,574 - aiogram.dispatcher - INFO - Polling stopped for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:35:20,269 - aiogram.dispatcher - INFO - Start polling
+2024-07-22 16:35:20,533 - aiogram.dispatcher - INFO - Run polling for bot @S_hakirov_bot id=5955659888 - 'ShakirBot'
+2024-07-22 16:35:47,135 - aiogram.event - INFO - Update id=948208082 is handled. Duration 765 ms by bot id=5955659888
+2024-07-22 16:35:48,744 - aiogram.event - INFO - Update id=948208083 is handled. Duration 686 ms by bot id=5955659888
+2024-07-22 16:35:55,486 - aiogram.event - INFO - Update id=948208084 is handled. Duration 390 ms by bot id=5955659888
+2024-07-22 16:36:07,054 - aiogram.event - INFO - Update id=948208085 is handled. Duration 359 ms by bot id=5955659888
+2024-07-22 16:36:11,201 - aiogram.event - INFO - Update id=948208086 is handled. Duration 375 ms by bot id=5955659888
+2024-07-22 16:36:12,632 - aiogram.event - INFO - Update id=948208087 is handled. Duration 264 ms by bot id=5955659888
+2024-07-22 16:36:14,936 - aiogram.event - INFO - Update id=948208088 is handled. Duration 875 ms by bot id=5955659888
+2024-07-22 16:39:19,731 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientOSError: [WinError 1236] Подключение к сети было разорвано локальной системой
+2024-07-22 16:39:19,739 - aiogram.dispatcher - WARNING - Sleep for 1.000000 seconds and try again... (tryings = 0, bot id = 5955659888)
+2024-07-22 16:39:20,746 - aiogram.dispatcher - ERROR - Failed to fetch updates - TelegramNetworkError: HTTP Client says - ClientConnectorError: Cannot connect to host api.telegram.org:443 ssl:default [Сетевая папка недоступна. За информацией о разрешении проблем в сети обратитесь к справочной системе Windows]
+2024-07-22 16:39:20,898 - aiogram.dispatcher - WARNING - Sleep for 1.268358 seconds and try again... (tryings = 1, bot id = 5955659888)

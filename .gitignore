@@ -2,5 +2,4 @@
 .venv/
 .idea/
 __pycache__/
-*.log
-bot.log.1
+*.log*

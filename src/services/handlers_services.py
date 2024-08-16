@@ -30,7 +30,8 @@ async def get_questions_from_db():
             "B": question.second_answer,
             "C": question.third_answer,
             "D":  question.fourth_answer,
-            "valid answer number": question.valid_answer_number
+            "valid answer number": question.valid_answer_number,
+            "description": question.description
         })
     return result
 
@@ -63,7 +64,7 @@ async def process_incorrect_answer():
     pass
 
 
-async def process_answer(callback_query: CallbackQuery, valid_answer, state: FSMContext) -> None:
+async def process_answer(callback_query: CallbackQuery, valid_answer:str, state: FSMContext, description:str) -> None:
     answer = callback_query.data
     if int(answer) == int(valid_answer):
         await process_correct_answer(state)
@@ -71,7 +72,7 @@ async def process_answer(callback_query: CallbackQuery, valid_answer, state: FSM
     else:
         answer_letter = "ABCD"[int(answer)]
         valid_answer_letter = "ABCD"[valid_answer]
-        bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter, valid_answer_letter=valid_answer_letter)
+        bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter, valid_answer_letter=valid_answer_letter, description=description)
         await callback_query.message.answer(bot_answer_text)
 
 

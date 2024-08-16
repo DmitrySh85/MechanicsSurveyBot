@@ -2,7 +2,7 @@ START_TEXT = "Это бот для опросов механиков сети а
 
 CORRECT_ANSWER_TEXT = "Это правильный ответ. Так держать!"
 
-INCORRECT_ANSWER_TEXT = "Вы ответили {answer_letter}. К сожалению, вы не правы. Правильный ответ {valid_answer_letter}."
+INCORRECT_ANSWER_TEXT = "Вы ответили {answer_letter}. К сожалению, вы не правы. Правильный ответ {valid_answer_letter}.\n{description}"
 
 NO_USER_FOUND_TEXT = "Вы не зарегистрированы в системе. Пожалуйста, дождитесь подтверждения администратора."
 

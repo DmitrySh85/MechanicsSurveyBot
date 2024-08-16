@@ -121,7 +121,8 @@ async def survey_handler(message: Message, state: FSMContext) -> None:
 async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     valid_answer = data["questions"][0]["valid answer number"]
-    await process_answer(callback_query, valid_answer, state)
+    description = data["questions"][0]["description"]
+    await process_answer(callback_query, valid_answer, state, description)
     await state.set_state(SurveyForm.second_question)
     question_number = 1
     question_text = await get_question_text(state, question_number)
@@ -133,7 +134,8 @@ async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext)
 async def second_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     valid_answer = data["questions"][1]["valid answer number"]
-    await process_answer(callback_query, valid_answer, state)
+    description = data["questions"][1]["description"]
+    await process_answer(callback_query, valid_answer, state, description)
     await state.set_state(SurveyForm.third_question)
     question_number = 2
     question_text = await get_question_text(state, question_number)
@@ -145,7 +147,8 @@ async def second_answer_handler(callback_query: CallbackQuery, state: FSMContext
 async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     valid_answer = data["questions"][2]["valid answer number"]
-    await process_answer(callback_query, valid_answer, state)
+    description = data["questions"][2]["description"]
+    await process_answer(callback_query, valid_answer, state, description)
     await state.set_state(SurveyForm.fourth_question)
     question_number = 3
     question_text = await get_question_text(state, question_number)
@@ -157,7 +160,8 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
 async def fourth_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     valid_answer = data["questions"][3]["valid answer number"]
-    await process_answer(callback_query, valid_answer, state)
+    description = data["questions"][3]["description"]
+    await process_answer(callback_query, valid_answer, state, description)
     await state.set_state(SurveyForm.fifth_question)
     question_number = 4
     question_text = await get_question_text(state, question_number)
@@ -169,7 +173,8 @@ async def fourth_answer_handler(callback_query: CallbackQuery, state: FSMContext
 async def fifth_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
     data = await state.get_data()
     valid_answer = data["questions"][4]["valid answer number"]
-    await process_answer(callback_query, valid_answer, state)
+    description = data["questions"][4]["description"]
+    await process_answer(callback_query, valid_answer, state, description)
     data = await state.get_data()
     valid_answers_count = data.get("valid_answers", 0)
     await send_survey_results(callback_query, valid_answers_count)

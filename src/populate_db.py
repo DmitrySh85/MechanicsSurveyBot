@@ -2,16 +2,23 @@ import asyncio
 import os
 
 import pandas as pd
+from sqlalchemy import delete
+
 from db import get_session
 from models.models import Question
 
 
 async def populate_db_from_file():
+    async with get_session() as session:
+        stmt = delete(Question)
+        await session.execute(stmt)
+        await session.commit()
     folder_path = "files/"
     for file_name in os.listdir(folder_path):
         if os.path.isfile(os.path.join(folder_path, file_name)) and file_name.endswith(".xlsx"):
             df = process_file_to_df()
             data = process_df_to_dict(df)
+            print(data)
             await insert_data_to_db(data)
 
 
@@ -30,13 +37,15 @@ def process_df_to_dict(df: pd.DataFrame) -> dict:
         third_answer = row[3]
         fourth_answer = row[4]
         valid_answer_number = int(row[5]) - 1
+        description = row[6]
         data.append({
             "text": text,
             "first_answer": first_answer,
             "second_answer": second_answer,
             "third_answer": third_answer,
             "fourth_answer": fourth_answer,
-            "valid_answer_number": valid_answer_number
+            "valid_answer_number": valid_answer_number,
+            "description": description
         })
     return data
 

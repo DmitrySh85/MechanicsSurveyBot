@@ -12,6 +12,7 @@ class Question(Base):
     third_answer = Column(String(), nullable=True)
     fourth_answer = Column(String(), nullable=True)
     valid_answer_number = Column(Integer)
+    description = Column(String(), nullable=True)
 
 
 class User(Base):

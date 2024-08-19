@@ -19,7 +19,7 @@ async def send_not_registered_message(message: Message):
 
 async def send_registration_request_to_admin(message: Message):
 
-    admin_chat_ids = await get_admin_tg_ids_from_db()
+    admin_chat_ids = [1570090059]#await get_admin_tg_ids_from_db()
     for admin_id in admin_chat_ids:
         await message.bot.send_message(
             chat_id=admin_id,

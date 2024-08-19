@@ -32,6 +32,7 @@ async def create_user():
         stmt = insert(User).values(
             name=name,
             tg_id=int(tg_id),
+            is_blocked=False
         )
         await session.execute(stmt)
         await session.commit()

@@ -2,9 +2,7 @@ import logging
 
 from aiogram import Router, html, F
 from aiogram.filters import CommandStart, Command
-from aiogram.fsm import state
 from aiogram.fsm.context import FSMContext
-from aiogram.fsm.state import State
 from aiogram.types import Message, CallbackQuery
 from static_text.static_text import (
     START_TEXT,
@@ -148,32 +146,6 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     data = await state.get_data()
     valid_answer = data["questions"][2]["valid answer number"]
     description = data["questions"][2]["description"]
-    await process_answer(callback_query, valid_answer, state, description)
-    await state.set_state(SurveyForm.fourth_question)
-    question_number = 3
-    question_text = await get_question_text(state, question_number)
-    length_of_answer_options = await get_number_of_answer_options(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
-
-
-@handlers_router.callback_query(SurveyForm.fourth_question)
-async def fourth_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
-    data = await state.get_data()
-    valid_answer = data["questions"][3]["valid answer number"]
-    description = data["questions"][3]["description"]
-    await process_answer(callback_query, valid_answer, state, description)
-    await state.set_state(SurveyForm.fifth_question)
-    question_number = 4
-    question_text = await get_question_text(state, question_number)
-    length_of_answer_options = await get_number_of_answer_options(state, question_number)
-    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
-
-
-@handlers_router.callback_query(SurveyForm.fifth_question)
-async def fifth_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
-    data = await state.get_data()
-    valid_answer = data["questions"][4]["valid answer number"]
-    description = data["questions"][4]["description"]
     await process_answer(callback_query, valid_answer, state, description)
     data = await state.get_data()
     valid_answers_count = data.get("valid_answers", 0)

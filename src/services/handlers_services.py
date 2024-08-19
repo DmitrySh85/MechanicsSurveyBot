@@ -19,7 +19,7 @@ logger = init_logger(__name__)
 async def get_questions_from_db():
     async with get_session() as session:
         random_questions = await session.execute(
-            select(Question).order_by(func.random()).limit(5))
+            select(Question).order_by(func.random()).limit(3))
     random_questions = random_questions.scalars().all()
     result = []
     for question in random_questions:
@@ -49,7 +49,6 @@ async def get_question_text(state: FSMContext, question_number: int):
 async def get_number_of_answer_options(state: FSMContext, question_number: int):
     data = await state.get_data()
     question = data["questions"][question_number]
-    print(question)
     return len(question) - 4
 
 

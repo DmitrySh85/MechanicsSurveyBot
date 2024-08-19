@@ -18,6 +18,6 @@ REGISTRATION_REJECT_BTN = "Отклонить"
 
 REGISTRATION_REJECT_MESSAGE = "Ваш запрос на регистрацию был отклонен. Пожалуйста, свяжитесь с администратором для получения дополнительной информации."
 
-ADMIN_FINAL_MESSAGE = "Пользователь {user_first_name} {user_last_name} прошел опрос и дал {valid_answers_count} правильных ответ(ов) на 5 вопросов."
+ADMIN_FINAL_MESSAGE = "Пользователь {user_first_name} {user_last_name} прошел опрос и дал {valid_answers_count} правильных ответ(ов) на 3 вопроса."
 
-USER_FINAL_MESSAGE = "Вы прошли опрос и дали {valid_answers_count} правильных ответ(ов) на 5 вопросов."
+USER_FINAL_MESSAGE = "Вы прошли опрос и дали {valid_answers_count} правильных ответ(ов) на 3 вопроса."

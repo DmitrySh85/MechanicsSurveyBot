@@ -18,7 +18,6 @@ async def populate_db_from_file():
         if os.path.isfile(os.path.join(folder_path, file_name)) and file_name.endswith(".xlsx"):
             df = process_file_to_df()
             data = process_df_to_dict(df)
-            print(data)
             await insert_data_to_db(data)
 
 

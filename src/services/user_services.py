@@ -42,3 +42,11 @@ async def set_user_is_blocked(tg_id: int):
         stmt = update(User).where(User.id == tg_id).values(is_blocked=True)
         await session.execute(stmt)
         await session.commit()
+
+
+async def get_all_users_tg_ids():
+    async with get_session() as session:
+        stmt = select(User.tg_id).where(User.is_blocked == False)
+        result = await session.execute(stmt)
+        users_tg_ids = result.scalars().all()
+    return users_tg_ids

@@ -9,7 +9,9 @@ from static_text.static_text import (
     NO_USER_FOUND_TEXT,
     registration_confirm_callback_data,
     registration_reject_callback_data,
-    REGISTRATION_REJECT_MESSAGE
+    REGISTRATION_REJECT_MESSAGE,
+    survey_accept_callback_data,
+    survey_reject_callback_data
 
 )
 from keyboards.keyboards import survey_keyboard, answer_keyboard
@@ -21,7 +23,8 @@ from services.handlers_services import (
     process_answer,
     check_user,
     check_user_is_not_blocked,
-    send_survey_results
+    send_survey_results,
+    get_reject_survey_answer_text
     )
 from services.user_services import (
     register_user,
@@ -113,6 +116,24 @@ async def survey_handler(message: Message, state: FSMContext) -> None:
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
     await message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+
+
+@handlers_router.callback_query(F.data.startswith(survey_accept_callback_data))
+async def survey_from_inline_kb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    questions = await get_questions_from_db()
+    await state.update_data(questions=questions)
+    await state.update_data(valid_answers=0)
+    await state.set_state(SurveyForm.first_question)
+    question_number = 0
+    question_text = await get_question_text(state, question_number)
+    length_of_answer_options = await get_number_of_answer_options(state, question_number)
+    await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+
+
+@handlers_router.callback_query(F.data.startswith(survey_reject_callback_data))
+async def reject_survey_from_inline_kb_handler(callback_query: CallbackQuery):
+    text = get_reject_survey_answer_text()
+    await callback_query.message.answer(text)
 
 
 @handlers_router.callback_query(SurveyForm.first_question)

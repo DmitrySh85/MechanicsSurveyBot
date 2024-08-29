@@ -1,3 +1,5 @@
+from random import randint
+
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from db import get_session
@@ -11,6 +13,7 @@ from static_text.static_text import (
 )
 from models.models import User
 from bot_logger import init_logger
+from static_text.static_data import SURVEY_REJECT_ANSWERS
 
 
 logger = init_logger(__name__)
@@ -129,3 +132,8 @@ async def get_admin_tg_ids_from_db():
         result = await session.execute(stmt)
     admin_list = result.fetchall()
     return [tg_id.tg_id for tg_id in admin_list]
+
+
+def get_reject_survey_answer_text():
+    index = randint(0, len(SURVEY_REJECT_ANSWERS)-1)
+    return SURVEY_REJECT_ANSWERS[index]

@@ -21,3 +21,8 @@ REGISTRATION_REJECT_MESSAGE = "Ваш запрос на регистрацию �
 ADMIN_FINAL_MESSAGE = "Пользователь {user_first_name} {user_last_name} прошел опрос и дал {valid_answers_count} правильных ответ(ов) на 3 вопроса."
 
 USER_FINAL_MESSAGE = "Вы прошли опрос и дали {valid_answers_count} правильных ответ(ов) на 3 вопроса."
+
+SURVEY_ACCEPT_BTN = "Да"
+survey_accept_callback_data = "accept_survey"
+SURVEY_REJECT_BTN = "Нет"
+survey_reject_callback_data = "reject_survey"

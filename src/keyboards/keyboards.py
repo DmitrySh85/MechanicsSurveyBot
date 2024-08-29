@@ -5,7 +5,11 @@ from static_text.static_text import (
     registration_confirm_callback_data, 
     registration_reject_callback_data,
     REGISTRATION_CONFIRM_BTN,
-    REGISTRATION_REJECT_BTN
+    REGISTRATION_REJECT_BTN,
+    SURVEY_ACCEPT_BTN,
+    survey_accept_callback_data,
+    SURVEY_REJECT_BTN,
+    survey_reject_callback_data
 
 )
 
@@ -42,6 +46,24 @@ def confirm_registration_kb(user: User) -> InlineKeyboardMarkup:
                 InlineKeyboardButton(
                     text=REGISTRATION_REJECT_BTN,
                     callback_data=f"{registration_reject_callback_data}:{user.id}:{user.username}",
+                ),
+            ]
+        ]
+    )
+    return keyboard
+
+
+def survey_reminder_kb():
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text=SURVEY_ACCEPT_BTN,
+                    callback_data=survey_accept_callback_data,
+                ),
+                InlineKeyboardButton(
+                    text=SURVEY_REJECT_BTN,
+                    callback_data=survey_reject_callback_data,
                 ),
             ]
         ]

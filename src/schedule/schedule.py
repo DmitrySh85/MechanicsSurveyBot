@@ -1,3 +1,4 @@
+from aiogram.exceptions import TelegramBadRequest, TelegramServerError
 from bot_logger import init_logger
 from services.user_services import get_all_users_tg_ids
 from dispatcher import bot
@@ -13,7 +14,14 @@ async def send_survey_notification():
     logger.info(f"Received users tg_ids:{users_tg_ids}")
     for tg_id in users_tg_ids:
         message_text = get_survey_reminder_text()
-        await bot.send_message(tg_id, message_text, reply_markup=survey_reminder_kb())
+        try:
+            await bot.send_message(tg_id, message_text, reply_markup=survey_reminder_kb())
+        except (TelegramBadRequest, TelegramServerError) as e:
+            logger.debug(f"failed to send message to {tg_id}: {e}")
+
+
+
+
 
 
 

@@ -76,6 +76,7 @@ async def process_answer(callback_query: CallbackQuery, valid_answer:str, state:
         valid_answer_letter = "ABCD"[valid_answer]
         bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter, valid_answer_letter=valid_answer_letter, description=description)
         await callback_query.message.answer(bot_answer_text)
+    await callback_query.answer()
 
 
 async def check_user(chat_id: int) -> int| None:

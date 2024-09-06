@@ -74,7 +74,7 @@ async def handle_register_confirmation(callback_query: CallbackQuery):
     try:
         await register_user(user_id, username)
     except ValueError as e:
-        await callback_query.answer(e)
+        await callback_query.answer(str(e))
     await callback_query.answer(f"User {user_id} has been registered.")
     await callback_query.message.edit_text(
         f"User {user_id} has been registered.", reply_markup=None

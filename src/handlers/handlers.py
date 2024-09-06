@@ -46,7 +46,7 @@ handlers_router = Router()
 
 @handlers_router.message(CommandStart())
 async def command_start_handler(message: Message) -> None:
-    if await check_user(message.from_user.id):
+    if await check_user_is_not_blocked(message.from_user.id):
         return await send_start_message(message)
     await send_registration_request_to_admin(message)
     await send_not_registered_message(message)
@@ -71,7 +71,10 @@ async def handle_register_confirmation(callback_query: CallbackQuery):
     except Exception as e:
         logger.error(e)
         return
-    await register_user(user_id, username)
+    try:
+        await register_user(user_id, username)
+    except ValueError as e:
+        await callback_query.answer(str(e))
     await callback_query.answer(f"User {user_id} has been registered.")
     await callback_query.message.edit_text(
         f"User {user_id} has been registered.", reply_markup=None

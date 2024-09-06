@@ -80,7 +80,9 @@ async def process_answer(callback_query: CallbackQuery, valid_answer:str, state:
 
 async def check_user(chat_id: int) -> int| None:
     async with get_session() as session:
-        stmt = select(User.id).where(User.tg_id == int(chat_id))
+        stmt = select(User.id).where(
+            User.tg_id == int(chat_id),
+        )
         result = await session.execute(stmt)
     user_id = result.scalar()
     if user_id:
@@ -92,6 +94,18 @@ async def check_user_is_not_blocked(chat_id: int) -> int| None:
         stmt = select(User.id).filter(
             User.tg_id == int(chat_id),
             User.is_blocked == False
+                                      )
+        result = await session.execute(stmt)
+    user_id = result.scalar()
+    if user_id:
+        return user_id
+
+
+async def check_blocked_user(chat_id: int) -> int| None:
+    async with get_session() as session:
+        stmt = select(User.id).filter(
+            User.tg_id == int(chat_id),
+            User.is_blocked == True
                                       )
         result = await session.execute(stmt)
     user_id = result.scalar()

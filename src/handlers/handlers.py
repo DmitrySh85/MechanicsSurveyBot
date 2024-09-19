@@ -118,7 +118,6 @@ async def survey_handler(message: Message, state: FSMContext) -> None:
     question_number = 0
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
-    print(length_of_answer_options)
     await message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
@@ -131,7 +130,6 @@ async def survey_from_inline_kb_handler(callback_query: CallbackQuery, state: FS
     question_number = 0
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
-    print(length_of_answer_options)
     await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 
@@ -151,7 +149,6 @@ async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     question_number = 1
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
-    print(length_of_answer_options)
     await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
 
 

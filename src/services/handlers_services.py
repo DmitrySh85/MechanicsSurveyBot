@@ -42,8 +42,13 @@ async def get_questions_from_db():
 async def get_question_text(state: FSMContext, question_number: int):
     data = await state.get_data()
     question = data["questions"][question_number]["question"]
-    answer_variants = [f"A) {data['questions'][question_number]['A']}", f"B) {data['questions'][question_number]['B']}",
-                       f"C) {data['questions'][question_number]['C']}", f"D) {data['questions'][question_number]['D']}"]
+    answer_variants = [f"A) {data['questions'][question_number]['A']}", f"B) {data['questions'][question_number]['B']}"]
+    c = data['questions'][question_number]['C']
+    d = data['questions'][question_number]['D']
+    if c:
+        answer_variants.append(f"C) {c}")
+    if d:
+        answer_variants.append(f"D) {d}")
 
     question_text = question + "\n" + "\n".join(answer_variants)
     return question_text
@@ -52,7 +57,12 @@ async def get_question_text(state: FSMContext, question_number: int):
 async def get_number_of_answer_options(state: FSMContext, question_number: int):
     data = await state.get_data()
     question = data["questions"][question_number]
-    return len(question) - 4
+    length = len(question) - 4
+    if not question["C"]:
+        length -= 1
+    if not question["D"]:
+        length -= 1
+    return length
 
 
 async def process_correct_answer(state: FSMContext) -> None:

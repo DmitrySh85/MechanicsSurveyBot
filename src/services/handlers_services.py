@@ -1,10 +1,11 @@
 from random import randint
+from typing import Union
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
 from db import get_session
 from models.models import Question
-from sqlalchemy import select, func
+from sqlalchemy import select, func, update
 from static_text.static_text import (
     CORRECT_ANSWER_TEXT,
     USER_FINAL_MESSAGE,
@@ -14,7 +15,6 @@ from static_text.static_text import (
 from models.models import User
 from bot_logger import init_logger
 from static_text.static_data import SURVEY_REJECT_ANSWERS
-
 
 logger = init_logger(__name__)
 
@@ -32,7 +32,7 @@ async def get_questions_from_db():
             "A": question.first_answer,
             "B": question.second_answer,
             "C": question.third_answer,
-            "D":  question.fourth_answer,
+            "D": question.fourth_answer,
             "valid answer number": question.valid_answer_number,
             "description": question.description
         })
@@ -65,10 +65,12 @@ async def get_number_of_answer_options(state: FSMContext, question_number: int):
     return length
 
 
-async def process_correct_answer(state: FSMContext) -> None:
+async def process_correct_answer(state: FSMContext, callback_query: CallbackQuery) -> None:
     data = await state.get_data()
     valid_answers = data.get("valid_answers", 0)
     valid_answers += 1
+    tg_id = callback_query.message.chat.id
+    await increment_user_points(tg_id)
     await state.update_data(valid_answers=valid_answers)
 
 
@@ -76,20 +78,21 @@ async def process_incorrect_answer():
     pass
 
 
-async def process_answer(callback_query: CallbackQuery, valid_answer:str, state: FSMContext, description:str) -> None:
+async def process_answer(callback_query: CallbackQuery, valid_answer: str, state: FSMContext, description: str) -> None:
     answer = callback_query.data
     if int(answer) == int(valid_answer):
-        await process_correct_answer(state)
+        await process_correct_answer(state, callback_query)
         await callback_query.message.answer(CORRECT_ANSWER_TEXT)
     else:
         answer_letter = "ABCD"[int(answer)]
-        valid_answer_letter = "ABCD"[valid_answer]
-        bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter, valid_answer_letter=valid_answer_letter, description=description)
+        valid_answer_letter = "ABCD"[int(valid_answer)]
+        bot_answer_text = INCORRECT_ANSWER_TEXT.format(answer_letter=answer_letter,
+                                                       valid_answer_letter=valid_answer_letter, description=description)
         await callback_query.message.answer(bot_answer_text)
     await callback_query.answer()
 
 
-async def check_user(chat_id: int) -> int| None:
+async def check_user(chat_id: int) -> int | None:
     async with get_session() as session:
         stmt = select(User.id).where(
             User.tg_id == int(chat_id),
@@ -98,26 +101,26 @@ async def check_user(chat_id: int) -> int| None:
     user_id = result.scalar()
     if user_id:
         return user_id
-    
 
-async def check_user_is_not_blocked(chat_id: int) -> int| None:
+
+async def check_user_is_not_blocked(chat_id: int) -> int | None:
     async with get_session() as session:
         stmt = select(User.id).filter(
             User.tg_id == int(chat_id),
             User.is_blocked == False
-                                      )
+        )
         result = await session.execute(stmt)
     user_id = result.scalar()
     if user_id:
         return user_id
 
 
-async def check_blocked_user(chat_id: int) -> int| None:
+async def check_blocked_user(chat_id: int) -> int | None:
     async with get_session() as session:
         stmt = select(User.id).filter(
             User.tg_id == int(chat_id),
             User.is_blocked == True
-                                      )
+        )
         result = await session.execute(stmt)
     user_id = result.scalar()
     if user_id:
@@ -160,5 +163,49 @@ async def get_admin_tg_ids_from_db():
 
 
 def get_reject_survey_answer_text():
-    index = randint(0, len(SURVEY_REJECT_ANSWERS)-1)
+    index = randint(0, len(SURVEY_REJECT_ANSWERS) - 1)
     return SURVEY_REJECT_ANSWERS[index]
+
+
+async def increment_user_points(tg_id: int) -> None:
+    points = await get_user_points(tg_id)
+    incremented_points = points + 1
+    await update_user_points(tg_id, incremented_points)
+
+
+async def get_user_points(tg_id: int) -> int:
+    async with get_session() as session:
+        stmt = select(User.points).where(User.tg_id == tg_id)
+        result = await session.execute(stmt)
+        points = result.scalar()
+    if points:
+        return points
+    return 0
+
+
+async def update_user_points(tg_id: int, points: int):
+    async with get_session() as session:
+        stmt = update(User).values(points=points).where(User.tg_id == tg_id)
+        await session.execute(stmt)
+        await session.commit()
+
+
+async def get_users_with_points():
+    async with get_session() as session:
+        stmt = select(User.name, User.points).where(User.points > 0).order_by(User.points.desc())
+        result = await session.execute(stmt)
+        return result.fetchall()
+
+
+async def get_user_position(tg_id: int) -> Union[int, None]:
+    tg_ids = await get_tg_ids_ordered_by_points()
+    if tg_ids and tg_id in tg_ids:
+        position = tg_ids.index(tg_id) + 1
+        return position
+
+
+async def get_tg_ids_ordered_by_points() -> Union[list[int], None]:
+    async with get_session() as session:
+        stmt = select(User.tg_id).where(User.points > 0).order_by(User.points.desc())
+        result = await session.execute(stmt)
+        return result.scalars().all()

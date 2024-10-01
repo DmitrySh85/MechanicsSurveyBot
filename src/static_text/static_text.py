@@ -1,5 +1,9 @@
 START_TEXT = "Это бот для опросов механиков сети автосервисов Геликон."
 
+START_SURVEY_BTN = "Пройти опрос"
+
+LEADERBOARD_BTN = "Рейтинг"
+
 CORRECT_ANSWER_TEXT = "Это правильный ответ. Так держать!"
 
 INCORRECT_ANSWER_TEXT = "Вы ответили {answer_letter}. К сожалению, вы не правы. Правильный ответ {valid_answer_letter}.\n{description}"
@@ -23,6 +27,18 @@ ADMIN_FINAL_MESSAGE = "Пользователь {user_first_name} {user_last_nam
 USER_FINAL_MESSAGE = "Вы прошли опрос и дали {valid_answers_count} правильных ответ(ов) на 3 вопроса."
 
 SURVEY_ACCEPT_BTN = "Да"
+
 survey_accept_callback_data = "accept_survey"
+
 SURVEY_REJECT_BTN = "Нет"
+
 survey_reject_callback_data = "reject_survey"
+
+NO_POINTS_TEXT = "Пока нет пользователей с заработанными очками."
+
+MY_POSITION_BTN = "Моя позиция"
+
+MY_POSITION_TEXT = "Вы на {position} месте в списке участников."
+
+NO_POSITION_TEXT = "У вас нет заработанных очков и места в рейтинге."
+

@@ -6,10 +6,11 @@ from keyboards.keyboards import survey_keyboard
 
 
 async def send_start_message(message: Message):
+    tg_id = message.chat.id
     return await message.answer(
         text=START_TEXT,
         parse_mode="HTML",
-        reply_markup=survey_keyboard
+        reply_markup=await survey_keyboard(tg_id)
     )
 
 

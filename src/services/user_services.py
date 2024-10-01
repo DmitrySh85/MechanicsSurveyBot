@@ -1,7 +1,9 @@
+from typing import Union
+
 from db import get_session
 from sqlalchemy import select, update
 from models.models import User
-from .handlers_services import check_user,  check_blocked_user
+from .handlers_services import check_user, check_blocked_user
 from bot_logger import init_logger
 
 logger = init_logger(__name__)
@@ -60,5 +62,12 @@ async def get_all_users_tg_ids():
         result = await session.execute(stmt)
         users_tg_ids = result.scalars().all()
     return users_tg_ids
+
+
+async def check_user_is_admin(tg_id: int) -> bool:
+    async with get_session() as session:
+        stmt = select(User.is_admin).where(User.tg_id == tg_id)
+        result = await session.execute(stmt)
+        return result.scalar()
 
 

@@ -11,7 +11,13 @@ from static_text.static_text import (
     registration_reject_callback_data,
     REGISTRATION_REJECT_MESSAGE,
     survey_accept_callback_data,
-    survey_reject_callback_data
+    survey_reject_callback_data,
+    START_SURVEY_BTN,
+    LEADERBOARD_BTN,
+    NO_POINTS_TEXT,
+    MY_POSITION_BTN,
+    MY_POSITION_TEXT,
+    NO_POSITION_TEXT
 
 )
 from keyboards.keyboards import survey_keyboard, answer_keyboard
@@ -24,7 +30,9 @@ from services.handlers_services import (
     check_user,
     check_user_is_not_blocked,
     send_survey_results,
-    get_reject_survey_answer_text
+    get_reject_survey_answer_text,
+    get_users_with_points,
+    get_user_position
     )
 from services.user_services import (
     register_user,
@@ -105,7 +113,7 @@ async def handle_register_rejection(callback_query: CallbackQuery):
     )
 
 
-@handlers_router.message(F.text == "Пройти опрос")
+@handlers_router.message(F.text == START_SURVEY_BTN)
 async def survey_handler(message: Message, state: FSMContext) -> None:
     user = await check_user_is_not_blocked(message.chat.id)
     if not user:
@@ -175,6 +183,30 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     valid_answers_count = data.get("valid_answers", 0)
     await send_survey_results(callback_query, valid_answers_count)
     await state.clear()
+
+
+@handlers_router.message(F.text == LEADERBOARD_BTN)
+async def get_leaderboard(message: Message) -> None:
+    users = await get_users_with_points()
+    message_text = "\n".join([f"{index + 1}. {user.name} {user.points} очков" for index, user in enumerate(users)])
+    tg_id = message.chat.id
+    if message_text:
+        await message.answer(message_text, reply_markup=await survey_keyboard(tg_id))
+        return
+    await message.answer(NO_POINTS_TEXT, reply_markup=await survey_keyboard(tg_id))
+
+
+@handlers_router.message(F.text == MY_POSITION_BTN)
+async def get_my_position(message: Message) -> None:
+    tg_id = message.chat.id
+    position = await get_user_position(tg_id)
+    if position:
+        text = MY_POSITION_TEXT.format(position=position)
+        await message.answer(text, reply_markup=await survey_keyboard(tg_id))
+        return
+    await message.answer(NO_POSITION_TEXT, await survey_keyboard(tg_id))
+
+
 
 
 

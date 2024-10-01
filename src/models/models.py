@@ -22,6 +22,7 @@ class User(Base):
     name = Column(String(), nullable=True)
     is_admin = Column(Boolean(), default=False)
     is_blocked = Column(Boolean(), default=False)
+    points = Column(Integer(), default=0)
 
 
 class UserAnswer(Base):

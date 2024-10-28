@@ -239,7 +239,6 @@ async def process_purchase(callback_query: CallbackQuery) -> None:
     item_id = data[2]
     api_manager = StoreBackendManager()
     response = await api_manager.create_order(user_id, item_id)
-    print(response.status)
     if response.status == 201:
         await callback_query.answer(PURCHASE_SUCCESS_TEXT)
     else:

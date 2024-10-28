@@ -42,3 +42,16 @@ MY_POSITION_TEXT = "Вы на {position} месте в списке участн
 
 NO_POSITION_TEXT = "У вас нет заработанных очков и места в рейтинге."
 
+STORE_BTN = "Товары за правильные ответы"
+
+USER_POINTS_TEXT = "У вас {points} очков. Вы можете их потратить на покупку товаров."
+
+ITEM_TEXT = "{name}\n{description}\nЦена:{price} очков."
+
+PURCHASE_BTN = "Купить"
+
+purchase_callback_data = "purchase"
+
+PURCHASE_SUCCESS_TEXT = "Заказ успешно создан. Вы можете получить покупку у руководителя."
+
+PURCHASE_FAIL_TEXT = "Не удалось создать заказ"

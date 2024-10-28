@@ -17,27 +17,34 @@ from static_text.static_text import (
     NO_POINTS_TEXT,
     MY_POSITION_BTN,
     MY_POSITION_TEXT,
-    NO_POSITION_TEXT
-
+    NO_POSITION_TEXT,
+    STORE_BTN,
+    USER_POINTS_TEXT,
+    ITEM_TEXT,
+    purchase_callback_data,
+    PURCHASE_SUCCESS_TEXT,
+    PURCHASE_FAIL_TEXT
 )
-from keyboards.keyboards import survey_keyboard, answer_keyboard
+from keyboards.keyboards import survey_keyboard, answer_keyboard, purchase_keyboard
 from forms.forms import SurveyForm
 from services.handlers_services import (
     get_questions_from_db,
     get_question_text,
     get_number_of_answer_options,
     process_answer,
-    check_user,
     check_user_is_not_blocked,
     send_survey_results,
     get_reject_survey_answer_text,
     get_users_with_points,
-    get_user_position
+    get_user_position,
+    get_user_points
     )
 from services.user_services import (
     register_user,
-    reject_user
+    reject_user,
+    get_user,
 )
+from services.store_services import get_items
 
 from senders import (
     send_start_message, 
@@ -45,6 +52,8 @@ from senders import (
     send_registration_request_to_admin
 )
 from bot_logger import init_logger
+from apis.store_manager import StoreBackendManager
+
 
 logger = init_logger(__name__)
 
@@ -81,7 +90,7 @@ async def handle_register_confirmation(callback_query: CallbackQuery):
         return
     try:
         await register_user(user_id, username)
-    except ValueError as e:
+    except Exception as e:
         await callback_query.answer(str(e))
     await callback_query.answer(f"User {user_id} has been registered.")
     await callback_query.message.edit_text(
@@ -188,7 +197,7 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
 @handlers_router.message(F.text == LEADERBOARD_BTN)
 async def get_leaderboard(message: Message) -> None:
     users = await get_users_with_points()
-    message_text = "\n".join([f"{index + 1}. {user.name} {user.points} очков" for index, user in enumerate(users)])
+    message_text = "\n".join([f"{index + 1}. {user.get("name")} {user.get("points")} очков" for index, user in enumerate(users)])
     tg_id = message.chat.id
     if message_text:
         await message.answer(message_text, reply_markup=await survey_keyboard(tg_id))
@@ -207,6 +216,34 @@ async def get_my_position(message: Message) -> None:
     await message.answer(NO_POSITION_TEXT, await survey_keyboard(tg_id))
 
 
+@handlers_router.message(F.text == STORE_BTN)
+async def get_store_items(message: Message) -> None:
+    tg_id = message.chat.id
+    user = await get_user(tg_id)
+    user_id = user.get("id")
+    points = user.get("points")
+    await message.answer(USER_POINTS_TEXT.format(points=points))
+    items = await get_items()
+    if items:
+        for item in items:
+            item_text = ITEM_TEXT.format(name=item.get("name"), description=item.get("description"), price=item.get("price"))
+            item_id = item.get("id")
+            kb = purchase_keyboard(user_id, item_id)
+            await message.answer(item_text, reply_markup=kb)
+
+
+@handlers_router.callback_query(F.data.startswith(purchase_callback_data))
+async def process_purchase(callback_query: CallbackQuery) -> None:
+    data = callback_query.data.split(":")
+    user_id = data[1]
+    item_id = data[2]
+    api_manager = StoreBackendManager()
+    response = await api_manager.create_order(user_id, item_id)
+    print(response.status)
+    if response.status == 201:
+        await callback_query.answer(PURCHASE_SUCCESS_TEXT)
+    else:
+        await callback_query.answer(PURCHASE_FAIL_TEXT)
 
 
 

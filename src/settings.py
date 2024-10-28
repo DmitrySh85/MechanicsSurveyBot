@@ -12,6 +12,9 @@ DB_PASS = os.environ.get("DB_PASS")
 DB_URL = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 BOT_TOKEN = os.environ.get("BOT_TOKEN")
 
+BACKEND_API_URL = os.environ.get("BACKEND_API_URL")
+BACKEND_API_TOKEN = os.environ.get("BACKEND_API_TOKEN")
+
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 if DEBUG:
     LOG_LEVEL = logging.DEBUG

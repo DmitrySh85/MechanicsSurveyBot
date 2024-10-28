@@ -13,6 +13,9 @@ from static_text.static_text import (
     SURVEY_REJECT_BTN,
     survey_reject_callback_data,
     MY_POSITION_BTN,
+    STORE_BTN,
+    PURCHASE_BTN,
+    purchase_callback_data
 )
 from services.user_services import check_user_is_admin
 
@@ -30,6 +33,9 @@ async def survey_keyboard(tg_id: int) -> ReplyKeyboardMarkup:
                     [
                         KeyboardButton(text=btn_text),
                     ],
+                                        [
+                        KeyboardButton(text=STORE_BTN),
+                    ],
 
                 ],
                 resize_keyboard=True,
@@ -45,6 +51,17 @@ def answer_keyboard(length_of_answers: int) -> InlineKeyboardMarkup:
         ]
     )
     return keyboard
+
+def purchase_keyboard(user_id: int, item_id: int) -> InlineKeyboardMarkup:
+    keyboard = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text=PURCHASE_BTN, callback_data=f"{purchase_callback_data}:{user_id}:{item_id}")
+            ]
+        ]
+    )
+    return keyboard
+    
 
 
 def confirm_registration_kb(user: User) -> InlineKeyboardMarkup:

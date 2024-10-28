@@ -15,26 +15,28 @@ from static_text.static_text import (
 from models.models import User
 from bot_logger import init_logger
 from static_text.static_data import SURVEY_REJECT_ANSWERS
+from apis.users_manager import UsersBackendAPIManager
+from aiohttp.client_exceptions import ClientConnectionError
+from apis.question_manager import QuestionsBackendManager
+
 
 logger = init_logger(__name__)
 
 
 async def get_questions_from_db():
-    async with get_session() as session:
-        random_questions = await session.execute(
-            select(Question).order_by(func.random()).limit(3))
-    random_questions = random_questions.scalars().all()
-    result = []
+    api_manager = QuestionsBackendManager()
+    random_questions = await api_manager.get_questions()
+    result =[]
     for question in random_questions:
         result.append({
-            "id": question.id,
-            "question": question.text,
-            "A": question.first_answer,
-            "B": question.second_answer,
-            "C": question.third_answer,
-            "D": question.fourth_answer,
-            "valid answer number": question.valid_answer_number,
-            "description": question.description
+            "id": question.get("id"),
+            "question": question.get("text"),
+            "A": question.get("first_answer"),
+            "B": question.get("second_answer"),
+            "C": question.get("third_answer"),
+            "D": question.get("fourth_answer"),
+            "valid answer number": question.get("valid_answer_number") - 1,
+            "description": question.get("description")
         })
     return result
 
@@ -93,26 +95,20 @@ async def process_answer(callback_query: CallbackQuery, valid_answer: str, state
 
 
 async def check_user(chat_id: int) -> int | None:
-    async with get_session() as session:
-        stmt = select(User.id).where(
-            User.tg_id == int(chat_id),
-        )
-        result = await session.execute(stmt)
-    user_id = result.scalar()
-    if user_id:
-        return user_id
+    api_manager = UsersBackendAPIManager()
+    user = await api_manager.get_user_from_backend(chat_id)
+    if user:
+        return user.get("id")
 
 
 async def check_user_is_not_blocked(chat_id: int) -> int | None:
-    async with get_session() as session:
-        stmt = select(User.id).filter(
-            User.tg_id == int(chat_id),
-            User.is_blocked == False
-        )
-        result = await session.execute(stmt)
-    user_id = result.scalar()
-    if user_id:
-        return user_id
+    api_manager = UsersBackendAPIManager()
+    try:
+        user = await api_manager.get_user_from_backend(chat_id)
+    except ClientConnectionError as e:
+        logger.debug(e)
+    if user:
+        return user.get("id")
 
 
 async def check_blocked_user(chat_id: int) -> int | None:
@@ -153,13 +149,13 @@ async def get_final_message_text_for_admin(callback_query: CallbackQuery, valid_
 
 
 async def get_admin_tg_ids_from_db():
-    async with get_session() as session:
-        stmt = select(User.tg_id).where(
-            User.is_admin == True
-        )
-        result = await session.execute(stmt)
-    admin_list = result.fetchall()
-    return [tg_id.tg_id for tg_id in admin_list]
+    api_manager = UsersBackendAPIManager()
+    admins = await api_manager.get_users_from_backend(role="ADMIN")
+    try:
+        return [admin.get("tg_id") for admin in admins]
+    except TypeError:
+        return []
+
 
 
 def get_reject_survey_answer_text():
@@ -168,12 +164,16 @@ def get_reject_survey_answer_text():
 
 
 async def increment_user_points(tg_id: int) -> None:
-    points = await get_user_points(tg_id)
-    incremented_points = points + 1
-    await update_user_points(tg_id, incremented_points)
+    api_manager = UsersBackendAPIManager()
+    await api_manager.increment_user_points(tg_id)
 
 
 async def get_user_points(tg_id: int) -> int:
+    api_manager = UsersBackendAPIManager()
+    user = await api_manager.get_user_from_backend(tg_id)
+    return user.get("points", 0)
+
+    """
     async with get_session() as session:
         stmt = select(User.points).where(User.tg_id == tg_id)
         result = await session.execute(stmt)
@@ -181,20 +181,18 @@ async def get_user_points(tg_id: int) -> int:
     if points:
         return points
     return 0
-
-
-async def update_user_points(tg_id: int, points: int):
-    async with get_session() as session:
-        stmt = update(User).values(points=points).where(User.tg_id == tg_id)
-        await session.execute(stmt)
-        await session.commit()
+    """
 
 
 async def get_users_with_points():
-    async with get_session() as session:
-        stmt = select(User.name, User.points).where(User.points > 0).order_by(User.points.desc())
-        result = await session.execute(stmt)
-        return result.fetchall()
+    api_manager = UsersBackendAPIManager()
+    users = await api_manager.get_users_from_backend(is_blocked=False)
+    result = [
+        {"name":user.get("name"), "points": user.get("points")}
+        for user in users
+        if user.get("points", 0) > 0
+        ]
+    return result
 
 
 async def get_user_position(tg_id: int) -> Union[int, None]:
@@ -205,7 +203,12 @@ async def get_user_position(tg_id: int) -> Union[int, None]:
 
 
 async def get_tg_ids_ordered_by_points() -> Union[list[int], None]:
-    async with get_session() as session:
-        stmt = select(User.tg_id).where(User.points > 0).order_by(User.points.desc())
-        result = await session.execute(stmt)
-        return result.scalars().all()
+    api_manager = UsersBackendAPIManager()
+    users = await api_manager.get_users_from_backend()
+    users_with_points = list(filter(lambda x: x.get("points", 0) > 0, users))
+
+    users_with_points.sort(key=lambda x: x.get("points"), reverse=True)
+
+    result = [user.get("tg_id") for user in users_with_points]
+    return result
+

@@ -148,12 +148,14 @@ async def survey_from_inline_kb_handler(callback_query: CallbackQuery, state: FS
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
     await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+    await callback_query.answer()
 
 
 @handlers_router.callback_query(F.data.startswith(survey_reject_callback_data))
 async def reject_survey_from_inline_kb_handler(callback_query: CallbackQuery):
     text = get_reject_survey_answer_text()
     await callback_query.message.answer(text)
+    await callback_query.answer()
 
 
 @handlers_router.callback_query(SurveyForm.first_question)

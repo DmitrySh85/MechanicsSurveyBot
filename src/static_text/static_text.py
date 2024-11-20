@@ -10,9 +10,9 @@ INCORRECT_ANSWER_TEXT = "Вы ответили {answer_letter}. К сожале�
 
 NO_USER_FOUND_TEXT = "Вы не зарегистрированы в системе. Пожалуйста, дождитесь подтверждения администратора."
 
-registration_confirm_callback_data= "confirm_registration"
+registration_confirm_callback_data = "confirm_registration"
 
-registration_reject_callback_data= "reject_registration"
+registration_reject_callback_data = "reject_registration"
 
 REGISTRATION_REQUEST_MESSAGE = "Новый пользователь {user_id} {username} {first_name} {last_name} запросил доступ к боту. Пожалуйста, подтвердите, что он имеет право использовать бота."
 
@@ -54,4 +54,6 @@ purchase_callback_data = "purchase"
 
 PURCHASE_SUCCESS_TEXT = "Заказ успешно создан. Вы можете получить покупку у руководителя."
 
-PURCHASE_FAIL_TEXT = "Не удалось создать заказ"
+PURCHASE_FAIL_TEXT = "Не удалось создать заказ.\nНе хватает очков.\nНадо больше учиться."
+
+ORDER_MESSAGE = "Новый заказ из магазина за правильные ответы!\n Сотрудник {user_name} заказал {item_name}."

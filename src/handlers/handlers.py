@@ -49,7 +49,8 @@ from services.store_services import get_items
 from senders import (
     send_start_message, 
     send_not_registered_message,
-    send_registration_request_to_admin
+    send_registration_request_to_admin,
+    send_order_notice_to_admin
 )
 from bot_logger import init_logger
 from apis.store_manager import StoreBackendManager
@@ -241,10 +242,16 @@ async def process_purchase(callback_query: CallbackQuery) -> None:
     item_id = data[2]
     api_manager = StoreBackendManager()
     response = await api_manager.create_order(user_id, item_id)
-    if response.status == 201:
-        await callback_query.answer(PURCHASE_SUCCESS_TEXT)
-    else:
+    if response.status != 201:
         await callback_query.answer(PURCHASE_FAIL_TEXT)
+        return
+    data = await response.json()
+    item_name = data.get("item", {}).get("name", "")
+    purchaser_name = data.get("purchaser", {}).get("name", "")
+    await send_order_notice_to_admin(callback_query, item_name, purchaser_name)
+    await callback_query.answer(PURCHASE_SUCCESS_TEXT)
+
+
 
 
 

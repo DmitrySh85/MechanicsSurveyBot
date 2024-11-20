@@ -1,5 +1,10 @@
-from static_text.static_text import NO_USER_FOUND_TEXT, START_TEXT, REGISTRATION_REQUEST_MESSAGE
-from aiogram.types import Message
+from static_text.static_text import (
+    NO_USER_FOUND_TEXT,
+    START_TEXT,
+    REGISTRATION_REQUEST_MESSAGE,
+    ORDER_MESSAGE
+)
+from aiogram.types import Message, CallbackQuery
 from services.handlers_services import get_admin_tg_ids_from_db
 from keyboards.keyboards import confirm_registration_kb
 from keyboards.keyboards import survey_keyboard
@@ -28,3 +33,16 @@ async def send_registration_request_to_admin(message: Message):
             reply_markup=confirm_registration_kb(message.from_user),
         )
 
+
+async def send_order_notice_to_admin(
+        callback_query: CallbackQuery,
+        item_name: str,
+        purchaser_name: str
+):
+    admin_chat_ids = await get_admin_tg_ids_from_db()
+    for admin_id in admin_chat_ids:
+        await callback_query.message.bot.send_message(
+            chat_id=admin_id,
+            text=ORDER_MESSAGE.format(item_name=item_name, user_name=purchaser_name),
+            reply_markup=await survey_keyboard(admin_id),
+        )

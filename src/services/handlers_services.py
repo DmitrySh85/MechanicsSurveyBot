@@ -3,16 +3,12 @@ from typing import Union
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
-from db import get_session
-from models.models import Question
-from sqlalchemy import select, func, update
 from static_text.static_text import (
     CORRECT_ANSWER_TEXT,
     USER_FINAL_MESSAGE,
     ADMIN_FINAL_MESSAGE,
     INCORRECT_ANSWER_TEXT
 )
-from models.models import User
 from bot_logger import init_logger
 from static_text.static_data import SURVEY_REJECT_ANSWERS
 from apis.users_manager import UsersBackendAPIManager
@@ -107,20 +103,9 @@ async def check_user_is_not_blocked(chat_id: int) -> int | None:
         user = await api_manager.get_user_from_backend(chat_id)
     except ClientConnectionError as e:
         logger.debug(e)
+        return
     if user:
         return user.get("id")
-
-
-async def check_blocked_user(chat_id: int) -> int | None:
-    async with get_session() as session:
-        stmt = select(User.id).filter(
-            User.tg_id == int(chat_id),
-            User.is_blocked == True
-        )
-        result = await session.execute(stmt)
-    user_id = result.scalar()
-    if user_id:
-        return user_id
 
 
 async def send_survey_results(callback_query: CallbackQuery, valid_answers_count: int):
@@ -157,7 +142,6 @@ async def get_admin_tg_ids_from_db():
         return []
 
 
-
 def get_reject_survey_answer_text():
     index = randint(0, len(SURVEY_REJECT_ANSWERS) - 1)
     return SURVEY_REJECT_ANSWERS[index]
@@ -173,20 +157,11 @@ async def get_user_points(tg_id: int) -> int:
     user = await api_manager.get_user_from_backend(tg_id)
     return user.get("points", 0)
 
-    """
-    async with get_session() as session:
-        stmt = select(User.points).where(User.tg_id == tg_id)
-        result = await session.execute(stmt)
-        points = result.scalar()
-    if points:
-        return points
-    return 0
-    """
-
 
 async def get_users_with_points():
     api_manager = UsersBackendAPIManager()
     users = await api_manager.get_users_from_backend(is_blocked=False)
+    users.sort(key=lambda x: x.get("points", 0), reverse=True)
     result = [
         {"name":user.get("name"), "points": user.get("points")}
         for user in users

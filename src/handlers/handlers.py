@@ -37,7 +37,8 @@ from services.handlers_services import (
     get_reject_survey_answer_text,
     get_users_with_points,
     get_user_position,
-    get_user_points
+    get_user_points,
+    remove_keyboard_buttons,
     )
 from services.user_services import (
     register_user,
@@ -161,6 +162,7 @@ async def reject_survey_from_inline_kb_handler(callback_query: CallbackQuery):
 
 @handlers_router.callback_query(SurveyForm.first_question)
 async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+
     data = await state.get_data()
     valid_answer = data["questions"][0]["valid answer number"]
     description = data["questions"][0]["description"]
@@ -170,6 +172,7 @@ async def first_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
     await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+    await remove_keyboard_buttons(callback_query)
 
 
 @handlers_router.callback_query(SurveyForm.second_question)
@@ -183,6 +186,7 @@ async def second_answer_handler(callback_query: CallbackQuery, state: FSMContext
     question_text = await get_question_text(state, question_number)
     length_of_answer_options = await get_number_of_answer_options(state, question_number)
     await callback_query.message.answer(question_text, reply_markup=answer_keyboard(length_of_answer_options))
+    await remove_keyboard_buttons(callback_query)
 
 
 @handlers_router.callback_query(SurveyForm.third_question)
@@ -195,6 +199,7 @@ async def third_answer_handler(callback_query: CallbackQuery, state: FSMContext)
     valid_answers_count = data.get("valid_answers", 0)
     await send_survey_results(callback_query, valid_answers_count)
     await state.clear()
+    await remove_keyboard_buttons(callback_query)
 
 
 @handlers_router.message(F.text == LEADERBOARD_BTN)

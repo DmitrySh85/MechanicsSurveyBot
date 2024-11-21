@@ -187,3 +187,13 @@ async def get_tg_ids_ordered_by_points() -> Union[list[int], None]:
     result = [user.get("tg_id") for user in users_with_points]
     return result
 
+
+async def remove_keyboard_buttons(callback_query: CallbackQuery):
+    text = callback_query.message.text
+    message_id = callback_query.message.message_id
+    chat_id = callback_query.message.chat.id
+    await callback_query.message.bot.edit_message_text(
+        text=text,
+        message_id=message_id,
+        chat_id=chat_id
+    )

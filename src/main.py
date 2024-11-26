@@ -14,7 +14,7 @@ logger = init_logger(__name__)
 
 scheduler = AsyncIOScheduler(timezone='Europe/Moscow')
 
-trigger = CronTrigger(hour=10, minute=0, day='*/2')
+trigger = CronTrigger(hour=10, minute=00, day='*/2')
 
 scheduler.add_job(send_survey_notification, trigger)
 

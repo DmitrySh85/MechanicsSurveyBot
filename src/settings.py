@@ -20,3 +20,5 @@ if DEBUG:
     LOG_LEVEL = logging.DEBUG
 else:
     LOG_LEVEL = logging.INFO
+
+MAX_SURVEY_ATTEMPTS_PER_DAY = 3

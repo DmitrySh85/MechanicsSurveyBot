@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from settings import BACKEND_API_TOKEN, BACKEND_API_URL
 from aiohttp import ClientSession
 from bot_logger import init_logger
@@ -5,6 +7,10 @@ from typing import Optional
 
 
 logger = init_logger(__name__)
+
+
+class UsersBackendError(Exception):
+    """Exception for handling users backend errors"""
 
 
 class UsersBackendAPIManager:
@@ -98,6 +104,32 @@ class UsersBackendAPIManager:
             response = await session.put(
                 url=url, json=user, headers=headers
             )
+
+    async def create_user_attempts(self, user_id: UUID) -> dict:
+        headers = self._get_authorization_headers()
+        url = f"{self.backend_api_url}/api/survey/attempts/"
+        payload = {"employee": user_id}
+        async with ClientSession() as session:
+            response = await session.post(
+                url=url, json=payload, headers=headers
+            )
+            if response.status == 201:
+                data = await response.json()
+                return data
+            logger.debug(response.content)
+            raise UsersBackendError
+
+    async def increase_user_attempts_count(self, user_id: UUID):
+        headers = self._get_authorization_headers()
+        url = f"{self.backend_api_url}/api/survey/attempts/increase/"
+        payload = {"employee": user_id}
+        async with ClientSession() as session:
+            response = await session.post(
+                url=url, json=payload, headers=headers
+            )
+            if response.status != 200:
+                logger.debug(response.content)
+
             
     
     

@@ -23,7 +23,8 @@ from static_text.static_text import (
     ITEM_TEXT,
     purchase_callback_data,
     PURCHASE_SUCCESS_TEXT,
-    PURCHASE_FAIL_TEXT
+    PURCHASE_FAIL_TEXT,
+    NO_ATTEMPTS_LEFT_TEXT
 )
 from keyboards.keyboards import survey_keyboard, answer_keyboard, purchase_keyboard
 from forms.forms import SurveyForm
@@ -39,6 +40,8 @@ from services.handlers_services import (
     get_user_position,
     get_user_points,
     remove_keyboard_buttons,
+    check_user_have_attempts,
+    increment_daily_attempts_counter
     )
 from services.user_services import (
     register_user,
@@ -126,10 +129,11 @@ async def handle_register_rejection(callback_query: CallbackQuery):
 
 @handlers_router.message(F.text == START_SURVEY_BTN)
 async def survey_handler(message: Message, state: FSMContext) -> None:
-    user = await check_user_is_not_blocked(message.chat.id)
+    user = await check_user_have_attempts(message.from_user.id)
     if not user:
-        await message.reply(NO_USER_FOUND_TEXT)
+        await message.reply(NO_ATTEMPTS_LEFT_TEXT)
         return
+    await increment_daily_attempts_counter(user)
     questions = await get_questions_from_db()
     await state.update_data(questions=questions)
     await state.update_data(valid_answers=0)
@@ -142,6 +146,10 @@ async def survey_handler(message: Message, state: FSMContext) -> None:
 
 @handlers_router.callback_query(F.data.startswith(survey_accept_callback_data))
 async def survey_from_inline_kb_handler(callback_query: CallbackQuery, state: FSMContext) -> None:
+    user = await check_user_have_attempts(callback_query.message.chat.id)
+    if not user:
+        await callback_query.message.reply(NO_ATTEMPTS_LEFT_TEXT)
+        return
     questions = await get_questions_from_db()
     await state.update_data(questions=questions)
     await state.update_data(valid_answers=0)

@@ -1,5 +1,6 @@
 from random import randint
 from typing import Union
+from uuid import UUID
 
 from aiogram.fsm.context import FSMContext
 from aiogram.types import CallbackQuery
@@ -11,9 +12,13 @@ from static_text.static_text import (
 )
 from bot_logger import init_logger
 from static_text.static_data import SURVEY_REJECT_ANSWERS
-from apis.users_manager import UsersBackendAPIManager
+from apis.users_manager import (
+    UsersBackendAPIManager,
+    UsersBackendError
+)
 from aiohttp.client_exceptions import ClientConnectionError
 from apis.question_manager import QuestionsBackendManager
+from settings import MAX_SURVEY_ATTEMPTS_PER_DAY
 
 
 logger = init_logger(__name__)
@@ -90,14 +95,14 @@ async def process_answer(callback_query: CallbackQuery, valid_answer: str, state
     await callback_query.answer()
 
 
-async def check_user(chat_id: int) -> int | None:
+async def check_user(chat_id: int) -> UUID | None:
     api_manager = UsersBackendAPIManager()
     user = await api_manager.get_user_from_backend(chat_id)
     if user:
         return user.get("id")
 
 
-async def check_user_is_not_blocked(chat_id: int) -> int | None:
+async def check_user_is_not_blocked(chat_id: int) -> UUID | None:
     api_manager = UsersBackendAPIManager()
     try:
         user = await api_manager.get_user_from_backend(chat_id)
@@ -106,6 +111,38 @@ async def check_user_is_not_blocked(chat_id: int) -> int | None:
         return
     if user:
         return user.get("id")
+
+
+async def check_user_have_attempts(chat_id: int) -> UUID | None:
+    api_manager = UsersBackendAPIManager()
+    try:
+        user = await api_manager.get_user_from_backend(chat_id)
+    except ClientConnectionError as e:
+        logger.debug(e)
+        return
+    if not user:
+        return
+    user_id = user.get("id")
+    attempts = user.get("attempts")
+    if not attempts:
+        try:
+            attempts = await api_manager.create_user_attempts(user_id)
+        except UsersBackendError:
+            return
+    attempts_count = attempts.get("attempts")
+    if attempts_count > MAX_SURVEY_ATTEMPTS_PER_DAY:
+        logger.info("Attempt limit exceeded")
+        return
+    return user_id
+
+
+async def increment_daily_attempts_counter(user_id: UUID):
+    api_manager = UsersBackendAPIManager()
+    try:
+        await api_manager.increase_user_attempts_count(user_id)
+    except ClientConnectionError as e:
+        logger.debug(e)
+        return
 
 
 async def send_survey_results(callback_query: CallbackQuery, valid_answers_count: int):

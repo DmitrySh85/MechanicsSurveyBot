@@ -1,3 +1,6 @@
+from settings import MAX_SURVEY_ATTEMPTS_PER_DAY
+
+
 START_TEXT = "Это бот для опросов механиков сети автосервисов Геликон."
 
 START_SURVEY_BTN = "Пройти опрос"
@@ -57,3 +60,5 @@ PURCHASE_SUCCESS_TEXT = "Заказ успешно создан. Вы может
 PURCHASE_FAIL_TEXT = "Не удалось создать заказ.\nНе хватает очков.\nНадо больше учиться."
 
 ORDER_MESSAGE = "Новый заказ из магазина за правильные ответы!\n Сотрудник {user_name} заказал {item_name}."
+
+NO_ATTEMPTS_LEFT_TEXT = f"Допустимо проходить {MAX_SURVEY_ATTEMPTS_PER_DAY} попытки в день. Скорее всего, вы исчерпали лимит."
